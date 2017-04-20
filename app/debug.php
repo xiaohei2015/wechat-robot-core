@@ -27,6 +27,7 @@ use Hanson\Vbot\Message\Entity\Mina;
 use Hanson\Vbot\Message\Entity\RequestFriend;
 use Hanson\Vbot\Message\Entity\GroupChange;
 use Hanson\Vbot\Message\Entity\NewFriend;
+use Hanson\Vbot\Support\Console;
 
 $path = __DIR__ . '/./../tmp/';
 $robot = new Vbot([
@@ -46,15 +47,23 @@ function reply($str){
 $robot->server->setMessageHandler(function ($message) use ($path) {
     /** @var $message Message */
 
+    // 位置信息 返回位置文字
+    if ($message instanceof Location) {
+        /** @var $message Location */
+        Text::send('地图链接：'.$message->from['UserName'], $message->url);
+        return '位置：'.$message;
+    }
+
     // 文字信息
     if ($message instanceof Text) {
         /** @var $message Text */
         // 联系人自动回复
         if ($message->fromType === 'Contact') {
-	    	echo $message->content.PHP_EOL;
+	    echo $message->content.PHP_EOL;
             return reply($message->content);
             // 群组@我回复
-        } elseif ($message->fromType === 'Group' && $message->isAt) {
+        } elseif ($message->fromType === 'Group') {
+		Console::log(json_encode($message));
             return reply($message->content);
         }
     }
