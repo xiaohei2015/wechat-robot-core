@@ -10,6 +10,7 @@ namespace Hanson\Vbot\Collections;
 
 
 use Hanson\Vbot\Support\FileManager;
+use Hanson\Vbot\Support\Console;
 
 class ContactFactory
 {
@@ -43,6 +44,9 @@ class ContactFactory
             FileManager::download('group.json', json_encode(group()->all()));
             FileManager::download('official.json', json_encode(official()->all()));
             FileManager::download('special.json', json_encode(Special::getInstance()->all()));
+            //send to rabbitmq
+            rabbit()->publish(['do'=>'group_add', 'robot_id'=>12, 'data'=>group()->all()]);
+            Console::log('group data send to rabbitmq success!');
         }
     }
 

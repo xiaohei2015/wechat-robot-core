@@ -9,6 +9,7 @@
 use Hanson\Vbot\Core\Server;
 use Hanson\Vbot\Core\Myself;
 use Hanson\Vbot\Core\Http;
+use Hanson\Vbot\Core\MyRabbit;
 use Hanson\Vbot\Collections\Account;
 use Hanson\Vbot\Collections\Member;
 use Hanson\Vbot\Collections\Contact;
@@ -114,5 +115,16 @@ if (! function_exists('official')) {
     function official()
     {
         return Official::getInstance();
+    }
+}
+if (! function_exists('rabbit')) {
+    /**
+     * Get the available container instance.
+     *
+     * @return Official
+     */
+    function rabbit()
+    {
+        return MyRabbit::getInstance();
     }
 }
