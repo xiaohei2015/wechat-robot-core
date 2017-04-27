@@ -69,4 +69,20 @@ class MyRabbit
     {
         rabbit()->publish(['do'=>'group_add', 'robot_id'=>$robot_id, 'data'=>$group]);
     }
+
+    /**
+     * login success
+     */
+    public function loginSuccess($robot_id)
+    {
+        rabbit()->publish(['do'=>'robot_state', 'robot_id'=>$robot_id, 'data'=>['state'=>3]]);
+    }
+
+    /**
+     * login failed
+     */
+    public function loginFailed($robot_id)
+    {
+        rabbit()->publish(['do'=>'robot_state', 'robot_id'=>$robot_id, 'data'=>['state'=>4]]);
+    }
 }

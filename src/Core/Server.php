@@ -76,6 +76,17 @@ class Server
         return static::$instance;
     }
 
+    private function loginSuccess()
+    {
+        rabbit()->loginSuccess(server()->config['robot_id']);
+    }
+
+    private function loginFailed()
+    {
+        rabbit()->loginFailed(server()->config['robot_id']);
+    }
+
+
     /**
      * start a wechat trip
      */
@@ -103,6 +114,7 @@ class Server
         $this->waitForLogin();
         $this->login();
         Console::log('登录成功');
+        $this->loginSuccess();
     }
 
     /**
@@ -124,6 +136,7 @@ class Server
 
         if(!$matches){
             Console::log('获取UUID失败', Console::ERROR);
+            $this->loginFailed();
             exit;
         }
 
@@ -210,6 +223,7 @@ class Server
         }
 
         Console::log('登录超时，退出应用', Console::ERROR);
+        $this->loginFailed();
         exit;
     }
 
@@ -231,6 +245,7 @@ class Server
 
         if(in_array('', [$this->skey, $this->sid, $this->uin, $this->passTicket])){
             Console::log('登录失败', Console::ERROR);
+            $this->loginFailed();
             exit;
         }
 
@@ -263,6 +278,7 @@ class Server
 
         if($result['BaseResponse']['Ret'] != 0){
             Console::log('初始化失败，链接：' . $url, Console::ERROR);
+            $this->loginFailed();
             exit;
         }
     }
