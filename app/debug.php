@@ -59,11 +59,10 @@ $robot->server->setMessageHandler(function ($message) use ($path) {
         /** @var $message Text */
         // 联系人自动回复
         if ($message->fromType === 'Contact') {
-	    echo $message->content.PHP_EOL;
+	    	echo $message->content.PHP_EOL;
             return reply($message->content);
             // 群组@我回复
-        } elseif ($message->fromType === 'Group') {
-		Console::log(json_encode($message));
+        } elseif ($message->fromType === 'Group' && $message->isAt) {
             return reply($message->content);
         }
     }

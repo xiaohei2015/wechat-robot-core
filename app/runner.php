@@ -31,7 +31,8 @@ use Hanson\Vbot\Message\Entity\NewFriend;
 $path = __DIR__ . '/./../tmp/';
 $robot = new Vbot([
     'tmp' => $path,
-    'debug' => true
+    'debug' => true,
+    'robot_id' => $argv[1],
 ]);
 
 // 图灵自动回复

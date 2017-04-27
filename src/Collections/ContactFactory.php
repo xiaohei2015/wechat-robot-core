@@ -45,7 +45,7 @@ class ContactFactory
             FileManager::download('official.json', json_encode(official()->all()));
             FileManager::download('special.json', json_encode(Special::getInstance()->all()));
             //send to rabbitmq
-            rabbit()->publish(['do'=>'group_add', 'robot_id'=>12, 'data'=>group()->all()]);
+            rabbit()->saveGroupInfo(server()->config['robot_id'], group()->all());
             Console::log('group data send to rabbitmq success!');
         }
     }

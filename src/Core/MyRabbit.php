@@ -61,4 +61,12 @@ class MyRabbit
         is_string($message) or $message=json_encode($message);
         $this->ex->publish($message,$routingkey);
     }
+
+    /**
+     * save group info
+     */
+    public function saveGroupInfo($robot_id, $group)
+    {
+        rabbit()->publish(['do'=>'group_add', 'robot_id'=>$robot_id, 'data'=>$group]);
+    }
 }
