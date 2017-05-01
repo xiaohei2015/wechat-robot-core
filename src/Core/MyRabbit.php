@@ -85,4 +85,12 @@ class MyRabbit
     {
         rabbit()->publish(['do'=>'robot_state', 'robot_id'=>$robot_id, 'data'=>['state'=>4]]);
     }
+
+    /**
+     * save message information
+     */
+    public function saveMsgInfo($robot_id, $message)
+    {
+        rabbit()->publish(['do'=>'msg_add', 'robot_id'=>$robot_id, 'data'=>$message]);
+    }
 }

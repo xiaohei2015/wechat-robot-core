@@ -53,10 +53,13 @@ $robot->server->setMessageHandler(function ($message) use ($path) {
         // 联系人自动回复
         if ($message->fromType === 'Contact') {
 	    	echo $message->content.PHP_EOL;
-            return reply($message->content);
+            //return reply($message->content);
             // 群组@我回复
-        } elseif ($message->fromType === 'Group' && $message->isAt) {
-            return reply($message->content);
+        } elseif ($message->fromType === 'Group') {
+            rabbit()->saveMsgInfo(server()->config['robot_id'], $message);
+            if($message->isAt){
+                return reply($message->content);
+            }
         }
     }
 
