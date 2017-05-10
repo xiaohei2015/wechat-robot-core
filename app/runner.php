@@ -36,12 +36,13 @@ $robot = new Vbot([
 ]);
 
 // 图灵自动回复
-function reply($str){
-    return http()->post('http://www.tuling123.com/openapi/api', [
-        'key' => '1dce02aef026258eff69635a06b0ab7d',
-        'info' => $str
-    ], true)['text'];
-
+function reply($keyword, $group_id){
+    $response = http()->post('http://robot.chinacft.net/index.php?g=Web&m=Keyword&a=keywordrule', [
+        'keyword' => $keyword,
+        'groupid' => $group_id
+    ], true);
+    var_dump($response);
+    return $response['contents'];
 }
 
 $robot->server->setMessageHandler(function ($message) use ($path) {
@@ -57,9 +58,12 @@ $robot->server->setMessageHandler(function ($message) use ($path) {
             // 群组@我回复
         } elseif ($message->fromType === 'Group') {
             rabbit()->saveMsgInfo(server()->config['robot_id'], $message);
-            if($message->isAt){
-                return reply($message->content);
-            }
+            //if($message->isAt){
+                echo "keyword reply:".PHP_EOL;
+                echo $message->content.PHP_EOL;
+                echo $message->msg['FromUserName'].PHP_EOL;
+                return reply($message->content, $message->msg['FromUserName']);
+            //}
         }
     }
 
@@ -70,6 +74,14 @@ $robot->server->setMessageHandler(function ($message) use ($path) {
 
     return false;
 
+});
+
+$robot->server->setCustomerHandler(function(){
+    $msg = rabbit()->getGroupMsg();
+    if($msg){
+        Text::send($msg['user_name'], $msg['content']);
+        echo "send group message:".$msg['content'].PHP_EOL;
+    }
 });
 
 $robot->server->setExitHandler(function(){

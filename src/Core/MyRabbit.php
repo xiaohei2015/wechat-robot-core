@@ -93,4 +93,31 @@ class MyRabbit
     {
         rabbit()->publish(['do'=>'msg_add', 'robot_id'=>$robot_id, 'data'=>$message]);
     }
+
+    public function getGroupMsg(){
+        $result = [];
+        $bindingkey='group_key';
+        //连接RabbitMQ
+        $conn_args = array( 'host'=>'114.55.133.164' , 'port'=> '5672', 'login'=>'rabbit' , 'password'=> 'Rbtr@esit445','vhost' =>'/');
+        $conn = new \AMQPConnection($conn_args);
+        $conn->connect();
+        //设置queue名称，使用exchange，绑定routingkey
+        $channel = new \AMQPChannel($conn);
+        $q = new \AMQPQueue($channel);
+        $q->setName('group_queue');
+        $q->setFlags(AMQP_DURABLE);
+        $q->declare();
+        $q->bind('group_exchange',$bindingkey);
+        //消息获取
+        $messages = $q->get(AMQP_AUTOACK) ;
+        if ($messages){
+            $msg = json_decode($messages->getBody(), true );
+            //var_dump($msg);
+            if(isset($msg['do']) && $msg['do'] == 'msg_send'){
+                $result = ['user_name'=>$msg['user_name'],'content'=>$msg['content']];
+            }
+        }
+        $conn->disconnect();
+        return $result;
+    }
 }
